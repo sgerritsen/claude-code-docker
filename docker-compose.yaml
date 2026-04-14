@@ -1,0 +1,28 @@
+services:
+  claude:
+    build:
+      context: .
+      args:
+        - USER_ID=${USER_ID}
+    container_name: claude-code
+    volumes:
+      - ./data:/workspace              # Mounts your current folder into the sandbox
+      - ./.claude:/home/claude/.claude # Persists your login/settings
+    environment:
+      # --- Standard Anthropic Settings ---
+      # - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+
+      # --- Azure Foundry Settings ---
+      - CLAUDE_CODE_USE_FOUNDRY=${CLAUDE_CODE_USE_FOUNDRY:-0}
+      - ANTHROPIC_FOUNDRY_RESOURCE=${ANTHROPIC_RESOURCE}
+      - ANTHROPIC_FOUNDRY_API_KEY=${ANTHROPIC_API_KEY}
+      - ANTHROPIC_DEFAULT_SONNET_MODEL=${ANTHROPIC_MODEL:-claude-3-5-sonnet}
+
+      # --- Security & Privacy ---
+      - DISABLE_TELEMETRY=1
+
+    # Required for the interactive CLI
+    stdin_open: true
+    tty: true
+    # Ensures Ctrl+C works properly to stop the agent
+    init: true
