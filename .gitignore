@@ -1,8 +1,10 @@
 # Ignore everything
 .claude
+.devcontainer/*
 .env
 
 # Except these files
-!docker-compose.yaml
 !Dockerfile
 !.env.example
+!devcontainer.json
+!README.md
