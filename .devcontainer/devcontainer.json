@@ -1,0 +1,42 @@
+{
+  "name": "Claude Code (Azure Foundry)",
+  "build": {
+    "context": "..",
+    "dockerfile": "../Dockerfile"
+  },
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder}/data,target=/workspace,type=bind,consistency=cached",
+
+  "mounts": [
+    "source=${localWorkspaceFolder}/.claude,target=/home/claude/.claude,type=bind,consistency=cached"
+  ],
+
+  "remoteUser": "claude",
+  "updateRemoteUserUID": true,
+
+  // Use --env-file to load variables securely from a file
+  "runArgs": [
+    "--init",
+    "--env-file", "${localWorkspaceFolder}/.devcontainer/.env"
+  ],
+  "containerEnv": {
+    "DISABLE_TELEMETRY": "1"
+  },
+
+  "overrideCommand": true,
+
+  "customizations": {
+    "jetbrains": {
+      "plugins": [
+        "org.jetbrains.plugins.terminal",
+        "com.intellij.modules.lang"
+      ]
+    }
+  },
+
+  // No need for features if Node is in your Dockerfile,
+  // but if build fails, you can add "ghcr.io/devcontainers/features/node-js:1": {} here.
+  "features": {},
+
+  "postCreateCommand": ""
+}

@@ -1,41 +1,43 @@
-# Claude Code Docker Setup
+# Claude Code Devcontainer (Azure AI Foundry)
 
-Run [Claude Code](https://claude.ai/code) in an isolated Docker container.
+Run [Claude Code](https://claude.ai/code) in an isolated devcontainer, configured for [Azure AI Foundry](https://ai.azure.com).
 
 ## Prerequisites
 
-- [Docker](https://docs.docker.com/get-docker/) with Docker Compose
-- An Anthropic API key **or** Azure AI Foundry credentials
+- [Docker](https://docs.docker.com/get-docker/)
+- JetBrains IDE with Docker support
 
 ## Setup
 
 **1. Copy the example env file and fill in your credentials:**
 
 ```bash
-cp .env.example .env
+cp .devcontainer/.env.example .devcontainer/.env
 ```
 
-Edit `.env`:
+Edit `.devcontainer/.env` with your Azure AI Foundry details:
+- `ANTHROPIC_FOUNDRY_BASE_URL` — your Azure resource endpoint (e.g. `https://your-resource.services.ai.azure.com/anthropic`)
+- `ANTHROPIC_FOUNDRY_API_KEY` — your Azure API key
+- `ANTHROPIC_DEFAULT_SONNET_MODEL` — the model deployment name
 
-**2. Build and run:**
+**2. Create a workspace directory:**
 
 ```bash
-docker compose up --build --remove-orphans -d && docker compose exec -it claude claude
+mkdir data
 ```
 
-This drops you into an interactive Claude Code session inside the container.
+Files placed in `data/` are available at `/workspace` inside the container.
 
-## Usage
+**3. Open in devcontainer:**
 
-On subsequent runs (after the image is built):
+In JetBrains: go to the .devcontainer folder, right click the devcontainer.json and choose Create Devcontainer and Mount sources.
+The container will start building and open a new backend client for your container environment.
+Accept the prompt to use the devcontainer configuration.
 
-```bash
-docker compose up -d --build && docker compose exec -it claude claude
-```
-
-Place any files you want Claude to work with inside the `data/` directory — they will be available at `/workspace` inside the container.
+Claude Code either starts automatically when the container opens. to access, open terminal and type `claude`
 
 ## Notes
 
-- `DISABLE_TELEMETRY=1` is set by default to prevent usage data from being sent.
-- The `USER_ID` build arg ensures file permissions in the mounted `data/` volume match your host user. Run `id -u` on your machine to get the correct value.
+- `DISABLE_TELEMETRY=1` is set by default.
+- Your `.claude/` settings folder is bind-mounted from the host, so configuration and session history persist between container restarts.
+- `.devcontainer/.env` is gitignored — never commit it.
